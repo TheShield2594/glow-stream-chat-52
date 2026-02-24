@@ -38,17 +38,21 @@ const categories = [
 interface ChannelListProps {
   activeChannel: string;
   onChannelChange: (id: string) => void;
+  onOpenSettings?: () => void;
 }
 
-const ChannelList = ({ activeChannel, onChannelChange }: ChannelListProps) => {
+const ChannelList = ({ activeChannel, onChannelChange, onOpenSettings }: ChannelListProps) => {
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
 
   return (
     <div className="flex flex-col w-60 bg-card shrink-0">
       {/* Server header */}
-      <button className="h-12 px-4 flex items-center justify-between border-b border-border hover:bg-muted/50 transition-colors">
+      <button
+        onClick={onOpenSettings}
+        className="h-12 px-4 flex items-center justify-between border-b border-border hover:bg-muted/50 transition-colors"
+      >
         <h2 className="font-semibold text-foreground truncate">Vortex HQ</h2>
-        <ChevronDown size={16} className="text-muted-foreground" />
+        <Settings size={16} className="text-muted-foreground" />
       </button>
 
       {/* Search */}
