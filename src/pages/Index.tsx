@@ -1,12 +1,33 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from "react";
+import { AnimatePresence } from "framer-motion";
+import ServerSidebar from "@/components/chat/ServerSidebar";
+import ChannelList from "@/components/chat/ChannelList";
+import ChatArea from "@/components/chat/ChatArea";
+import MemberList from "@/components/chat/MemberList";
+import ProfilePanel from "@/components/chat/ProfilePanel";
 
 const Index = () => {
+  const [activeServer, setActiveServer] = useState("home");
+  const [activeChannel, setActiveChannel] = useState("general");
+  const [showMembers, setShowMembers] = useState(true);
+  const [profileName, setProfileName] = useState<string | null>(null);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="flex h-screen w-screen overflow-hidden bg-background">
+      <ServerSidebar activeServer={activeServer} onServerChange={setActiveServer} />
+      <ChannelList activeChannel={activeChannel} onChannelChange={setActiveChannel} />
+      <ChatArea
+        channel={activeChannel}
+        onToggleMembers={() => setShowMembers(!showMembers)}
+        showMembers={showMembers}
+        onOpenProfile={setProfileName}
+      />
+      <AnimatePresence>
+        {showMembers && !profileName && (
+          <MemberList onMemberClick={setProfileName} />
+        )}
+      </AnimatePresence>
+      <ProfilePanel name={profileName} onClose={() => setProfileName(null)} />
     </div>
   );
 };
