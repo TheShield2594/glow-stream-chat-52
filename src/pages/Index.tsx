@@ -8,8 +8,9 @@ import ProfilePanel from "@/components/chat/ProfilePanel";
 import ServerSettings from "@/components/chat/ServerSettings";
 import DMConversationList from "@/components/chat/DMConversationList";
 import DMChatArea from "@/components/chat/DMChatArea";
+import { NotificationProvider, useNotifications } from "@/hooks/useNotifications";
 
-const Index = () => {
+const IndexContent = () => {
   const [activeServer, setActiveServer] = useState("home");
   const [activeChannel, setActiveChannel] = useState("general");
   const [activeConversation, setActiveConversation] = useState("1");
@@ -18,7 +19,19 @@ const Index = () => {
   const [showSettings, setShowSettings] = useState(false);
   const [voiceChannel, setVoiceChannel] = useState<string | null>(null);
 
+  const { markRead } = useNotifications();
+
   const isDM = activeServer === "dm";
+
+  const handleChannelChange = (id: string) => {
+    setActiveChannel(id);
+    markRead(id);
+  };
+
+  const handleConversationChange = (id: string) => {
+    setActiveConversation(id);
+    markRead(`dm-${id}`);
+  };
 
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-background">
@@ -27,7 +40,7 @@ const Index = () => {
         <>
           <DMConversationList
             activeConversation={activeConversation}
-            onConversationChange={setActiveConversation}
+            onConversationChange={handleConversationChange}
           />
           <DMChatArea
             conversationId={activeConversation}
@@ -38,7 +51,7 @@ const Index = () => {
         <>
           <ChannelList
             activeChannel={activeChannel}
-            onChannelChange={setActiveChannel}
+            onChannelChange={handleChannelChange}
             onOpenSettings={() => setShowSettings(true)}
             voiceChannel={voiceChannel}
             onJoinVoice={setVoiceChannel}
@@ -64,5 +77,11 @@ const Index = () => {
     </div>
   );
 };
+
+const Index = () => (
+  <NotificationProvider>
+    <IndexContent />
+  </NotificationProvider>
+);
 
 export default Index;

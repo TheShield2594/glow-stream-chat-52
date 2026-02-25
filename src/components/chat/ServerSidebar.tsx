@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Plus, Compass, MessageCircle } from "lucide-react";
+import { useNotifications } from "@/hooks/useNotifications";
 
 const servers = [
   { id: "home", name: "Home", icon: "V", color: "from-primary to-accent" },
@@ -16,6 +17,9 @@ interface ServerSidebarProps {
 }
 
 const ServerSidebar = ({ activeServer, onServerChange }: ServerSidebarProps) => {
+  const { getTotalUnreads } = useNotifications();
+  const dmUnreads = getTotalUnreads("dm");
+
   return (
     <div className="flex flex-col items-center w-[72px] bg-sidebar py-3 gap-2 shrink-0">
       {/* DM Button */}
@@ -45,12 +49,23 @@ const ServerSidebar = ({ activeServer, onServerChange }: ServerSidebarProps) => 
         >
           <MessageCircle size={20} />
         </motion.button>
+        {/* DM badge */}
+        {dmUnreads.count > 0 && activeServer !== "dm" && (
+          <motion.span
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            className="absolute -bottom-1 -right-1 bg-destructive text-destructive-foreground text-[10px] font-bold min-w-[18px] h-[18px] flex items-center justify-center rounded-full px-1 border-2 border-sidebar"
+          >
+            {dmUnreads.count > 99 ? "99+" : dmUnreads.count}
+          </motion.span>
+        )}
       </div>
 
       <div className="w-8 h-[2px] bg-border rounded-full my-1" />
 
-      {servers.map((server, i) => {
+      {servers.map((server) => {
         const isActive = activeServer === server.id;
+        const serverUnreads = getTotalUnreads(server.id);
         return (
           <div key={server.id} className="relative group">
             {/* Active indicator */}
@@ -58,9 +73,9 @@ const ServerSidebar = ({ activeServer, onServerChange }: ServerSidebarProps) => 
               className="absolute -left-1 top-1/2 w-1 bg-primary rounded-r-full"
               initial={false}
               animate={{
-                height: isActive ? 32 : 0,
-                y: isActive ? -16 : 0,
-                opacity: isActive ? 1 : 0,
+                height: isActive ? 32 : serverUnreads.count > 0 ? 8 : 0,
+                y: isActive ? -16 : serverUnreads.count > 0 ? -4 : 0,
+                opacity: isActive || serverUnreads.count > 0 ? 1 : 0,
               }}
               transition={{ type: "spring", stiffness: 500, damping: 30 }}
             />
@@ -82,6 +97,25 @@ const ServerSidebar = ({ activeServer, onServerChange }: ServerSidebarProps) => 
             >
               {server.icon}
             </motion.button>
+
+            {/* Server badge */}
+            {serverUnreads.mentions > 0 && !isActive && (
+              <motion.span
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                className="absolute -bottom-1 -right-1 bg-destructive text-destructive-foreground text-[10px] font-bold min-w-[18px] h-[18px] flex items-center justify-center rounded-full px-1 border-2 border-sidebar"
+              >
+                {serverUnreads.mentions}
+              </motion.span>
+            )}
+            {/* Unread dot (no mentions) */}
+            {serverUnreads.count > 0 && serverUnreads.mentions === 0 && !isActive && (
+              <motion.span
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-foreground rounded-full border-2 border-sidebar"
+              />
+            )}
           </div>
         );
       })}

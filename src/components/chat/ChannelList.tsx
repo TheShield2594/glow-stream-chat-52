@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Hash, Volume2, ChevronDown, Settings, Plus, Search, Bell, Pin } from "lucide-react";
 import VoiceChannelPanel from "./VoiceChannelPanel";
+import { useNotifications } from "@/hooks/useNotifications";
 
 const categories = [
   {
@@ -47,6 +48,7 @@ interface ChannelListProps {
 
 const ChannelList = ({ activeChannel, onChannelChange, onOpenSettings, voiceChannel, onJoinVoice, onLeaveVoice }: ChannelListProps) => {
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
+  const { unreads } = useNotifications();
 
   return (
     <div className="flex flex-col w-60 bg-card shrink-0">
@@ -93,6 +95,9 @@ const ChannelList = ({ activeChannel, onChannelChange, onOpenSettings, voiceChan
                   className="overflow-hidden"
                 >
                   {cat.channels.map((ch) => {
+                    const isActive = ch.type === "voice" ? voiceChannel === ch.id : activeChannel === ch.id;
+                    const chUnread = unreads[ch.id];
+                    const hasUnread = !!chUnread && chUnread.count > 0;
                     return (
                       <button
                         key={ch.id}
@@ -104,25 +109,33 @@ const ChannelList = ({ activeChannel, onChannelChange, onOpenSettings, voiceChan
                           }
                         }}
                         className={`w-full flex items-center gap-1.5 px-2 py-1.5 rounded-md text-sm group transition-colors ${
-                          (ch.type === "voice" ? voiceChannel === ch.id : activeChannel === ch.id)
+                          isActive
                             ? "bg-muted text-foreground"
-                            : ch.unread
+                            : hasUnread
                             ? "text-foreground hover:bg-muted/50"
                             : "text-muted-foreground hover:bg-muted/30 hover:text-foreground"
                         }`}
                       >
+                        {/* Unread indicator bar */}
+                        {hasUnread && !isActive && (
+                          <span className="absolute left-0 w-1 h-2 bg-foreground rounded-r-full" />
+                        )}
                         {ch.type === "voice" ? (
                           <Volume2 size={16} className="shrink-0 text-muted-foreground" />
                         ) : (
                           <Hash size={16} className="shrink-0 text-muted-foreground" />
                         )}
-                        <span className={`truncate ${ch.unread && !(ch.type === "voice" ? voiceChannel === ch.id : activeChannel === ch.id) ? "font-medium" : ""}`}>
+                        <span className={`truncate ${hasUnread && !isActive ? "font-semibold" : ""}`}>
                           {ch.name}
                         </span>
-                        {ch.mentions && (
-                          <span className="ml-auto bg-destructive text-destructive-foreground text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
-                            {ch.mentions}
-                          </span>
+                        {chUnread && chUnread.mentions > 0 && !isActive && (
+                          <motion.span
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            className="ml-auto bg-destructive text-destructive-foreground text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center"
+                          >
+                            {chUnread.mentions}
+                          </motion.span>
                         )}
                         {ch.users && (
                           <span className="ml-auto text-[10px] text-muted-foreground">
