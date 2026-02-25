@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Search, Plus, Users } from "lucide-react";
+import { useNotifications } from "@/hooks/useNotifications";
 
 const conversations = [
   { id: "1", name: "Alex Chen", avatar: "A", color: "from-cyan-400 to-blue-500", status: "online", lastMessage: "Sounds good, let me know!", time: "2m ago", unread: 2 },
@@ -25,6 +26,7 @@ interface DMConversationListProps {
 
 const DMConversationList = ({ activeConversation, onConversationChange }: DMConversationListProps) => {
   const [search, setSearch] = useState("");
+  const { unreads } = useNotifications();
 
   const filtered = conversations.filter((c) =>
     c.name.toLowerCase().includes(search.toLowerCase())
@@ -70,47 +72,54 @@ const DMConversationList = ({ activeConversation, onConversationChange }: DMConv
 
       {/* Conversation list */}
       <div className="flex-1 overflow-y-auto scrollbar-thin px-2 pb-2 mt-1">
-        {filtered.map((convo) => {
-          const isActive = activeConversation === convo.id;
-          return (
-            <motion.button
-              key={convo.id}
-              onClick={() => onConversationChange(convo.id)}
-              className={`w-full flex items-center gap-2.5 px-2 py-2 rounded-md transition-colors mb-0.5 ${
-                isActive ? "bg-muted text-foreground" : "text-muted-foreground hover:bg-muted/30 hover:text-foreground"
-              }`}
-              whileTap={{ scale: 0.98 }}
-            >
-              <div className="relative shrink-0">
-                <div
-                  className={`w-8 h-8 rounded-full bg-gradient-to-br ${convo.color} flex items-center justify-center text-xs font-bold`}
-                  style={{ color: "white" }}
-                >
-                  {convo.avatar}
+          {filtered.map((convo) => {
+            const isActive = activeConversation === convo.id;
+            const dmKey = `dm-${convo.id}`;
+            const convoUnread = unreads[dmKey];
+            const unreadCount = convoUnread?.count || 0;
+            return (
+              <motion.button
+                key={convo.id}
+                onClick={() => onConversationChange(convo.id)}
+                className={`w-full flex items-center gap-2.5 px-2 py-2 rounded-md transition-colors mb-0.5 ${
+                  isActive ? "bg-muted text-foreground" : "text-muted-foreground hover:bg-muted/30 hover:text-foreground"
+                }`}
+                whileTap={{ scale: 0.98 }}
+              >
+                <div className="relative shrink-0">
+                  <div
+                    className={`w-8 h-8 rounded-full bg-gradient-to-br ${convo.color} flex items-center justify-center text-xs font-bold`}
+                    style={{ color: "white" }}
+                  >
+                    {convo.avatar}
+                  </div>
+                  <div
+                    className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-card ${statusColors[convo.status]}`}
+                  />
                 </div>
-                <div
-                  className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-card ${statusColors[convo.status]}`}
-                />
-              </div>
-              <div className="flex-1 min-w-0 text-left">
-                <div className="flex items-center justify-between">
-                  <span className={`text-sm truncate ${convo.unread > 0 ? "font-semibold text-foreground" : ""}`}>
-                    {convo.name}
-                  </span>
-                  <span className="text-[10px] text-muted-foreground shrink-0 ml-1">{convo.time}</span>
+                <div className="flex-1 min-w-0 text-left">
+                  <div className="flex items-center justify-between">
+                    <span className={`text-sm truncate ${unreadCount > 0 ? "font-semibold text-foreground" : ""}`}>
+                      {convo.name}
+                    </span>
+                    <span className="text-[10px] text-muted-foreground shrink-0 ml-1">{convo.time}</span>
+                  </div>
+                  <p className={`text-xs truncate ${unreadCount > 0 ? "text-foreground/80" : "text-muted-foreground"}`}>
+                    {convo.lastMessage}
+                  </p>
                 </div>
-                <p className={`text-xs truncate ${convo.unread > 0 ? "text-foreground/80" : "text-muted-foreground"}`}>
-                  {convo.lastMessage}
-                </p>
-              </div>
-              {convo.unread > 0 && (
-                <span className="bg-primary text-primary-foreground text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center shrink-0">
-                  {convo.unread}
-                </span>
-              )}
-            </motion.button>
-          );
-        })}
+                {unreadCount > 0 && (
+                  <motion.span
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="bg-primary text-primary-foreground text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center shrink-0"
+                  >
+                    {unreadCount}
+                  </motion.span>
+                )}
+              </motion.button>
+            );
+          })}
       </div>
 
       {/* User bar */}
