@@ -16,6 +16,7 @@ const Index = () => {
   const [showMembers, setShowMembers] = useState(true);
   const [profileName, setProfileName] = useState<string | null>(null);
   const [showSettings, setShowSettings] = useState(false);
+  const [voiceChannel, setVoiceChannel] = useState<string | null>(null);
 
   const isDM = activeServer === "dm";
 
@@ -39,6 +40,9 @@ const Index = () => {
             activeChannel={activeChannel}
             onChannelChange={setActiveChannel}
             onOpenSettings={() => setShowSettings(true)}
+            voiceChannel={voiceChannel}
+            onJoinVoice={setVoiceChannel}
+            onLeaveVoice={() => setVoiceChannel(null)}
           />
           <ChatArea
             channel={activeChannel}

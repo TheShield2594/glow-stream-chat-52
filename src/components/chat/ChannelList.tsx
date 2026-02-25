@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Hash, Volume2, ChevronDown, Settings, Plus, Search, Bell, Pin } from "lucide-react";
+import VoiceChannelPanel from "./VoiceChannelPanel";
 
 const categories = [
   {
@@ -39,9 +40,12 @@ interface ChannelListProps {
   activeChannel: string;
   onChannelChange: (id: string) => void;
   onOpenSettings?: () => void;
+  voiceChannel: string | null;
+  onJoinVoice: (id: string) => void;
+  onLeaveVoice: () => void;
 }
 
-const ChannelList = ({ activeChannel, onChannelChange, onOpenSettings }: ChannelListProps) => {
+const ChannelList = ({ activeChannel, onChannelChange, onOpenSettings, voiceChannel, onJoinVoice, onLeaveVoice }: ChannelListProps) => {
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
 
   return (
@@ -89,13 +93,18 @@ const ChannelList = ({ activeChannel, onChannelChange, onOpenSettings }: Channel
                   className="overflow-hidden"
                 >
                   {cat.channels.map((ch) => {
-                    const isActive = activeChannel === ch.id;
                     return (
                       <button
                         key={ch.id}
-                        onClick={() => onChannelChange(ch.id)}
+                        onClick={() => {
+                          if (ch.type === "voice") {
+                            voiceChannel === ch.id ? onLeaveVoice() : onJoinVoice(ch.id);
+                          } else {
+                            onChannelChange(ch.id);
+                          }
+                        }}
                         className={`w-full flex items-center gap-1.5 px-2 py-1.5 rounded-md text-sm group transition-colors ${
-                          isActive
+                          (ch.type === "voice" ? voiceChannel === ch.id : activeChannel === ch.id)
                             ? "bg-muted text-foreground"
                             : ch.unread
                             ? "text-foreground hover:bg-muted/50"
@@ -107,7 +116,7 @@ const ChannelList = ({ activeChannel, onChannelChange, onOpenSettings }: Channel
                         ) : (
                           <Hash size={16} className="shrink-0 text-muted-foreground" />
                         )}
-                        <span className={`truncate ${ch.unread && !isActive ? "font-medium" : ""}`}>
+                        <span className={`truncate ${ch.unread && !(ch.type === "voice" ? voiceChannel === ch.id : activeChannel === ch.id) ? "font-medium" : ""}`}>
                           {ch.name}
                         </span>
                         {ch.mentions && (
@@ -129,6 +138,20 @@ const ChannelList = ({ activeChannel, onChannelChange, onOpenSettings }: Channel
           </div>
         ))}
       </div>
+
+      {/* Voice Channel Panel */}
+      <AnimatePresence>
+        {voiceChannel && (
+          <VoiceChannelPanel
+            channelName={
+              categories
+                .flatMap((c) => c.channels)
+                .find((ch) => ch.id === voiceChannel)?.name || voiceChannel
+            }
+            onDisconnect={onLeaveVoice}
+          />
+        )}
+      </AnimatePresence>
 
       {/* User bar */}
       <div className="h-[52px] px-2 flex items-center gap-2 bg-sidebar border-t border-border">
