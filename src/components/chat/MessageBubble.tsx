@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useRelativeTime } from "@/hooks/useRelativeTime";
 
 interface Reaction {
   emoji: string;
@@ -22,6 +23,7 @@ interface MessageBubbleProps {
 }
 
 const MessageBubble = ({ message, isGrouped, onAvatarClick }: MessageBubbleProps) => {
+  const relativeTime = useRelativeTime(message.time);
   return (
     <motion.div
       initial={{ opacity: 0, y: 6 }}
@@ -33,8 +35,8 @@ const MessageBubble = ({ message, isGrouped, onAvatarClick }: MessageBubbleProps
     >
       {isGrouped ? (
         <div className="w-10 shrink-0 flex items-start justify-center">
-          <span className="text-[10px] text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity pt-1">
-            {message.time.split(" at ")[1]}
+          <span className="text-[10px] text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity pt-1" title={message.time}>
+            {relativeTime}
           </span>
         </div>
       ) : (
@@ -56,7 +58,7 @@ const MessageBubble = ({ message, isGrouped, onAvatarClick }: MessageBubbleProps
             >
               {message.author}
             </button>
-            <span className="text-[11px] text-muted-foreground">{message.time}</span>
+            <span className="text-[11px] text-muted-foreground" title={message.time}>{relativeTime}</span>
           </div>
         )}
         <p className="text-sm text-foreground/90 leading-relaxed">{message.content}</p>

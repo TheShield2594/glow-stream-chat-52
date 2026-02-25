@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Phone, Video, Pin, Search, SmilePlus, PlusCircle, ImagePlus, Send } from "lucide-react";
 import MessageBubble from "./MessageBubble";
+import TypingIndicator from "./TypingIndicator";
 
 const dmMessages: Record<string, Array<{
   id: string; author: string; avatar: string; color: string; content: string; time: string; reactions?: Array<{ emoji: string; count: number }>;
@@ -47,6 +48,7 @@ interface DMChatAreaProps {
 
 const DMChatArea = ({ conversationId, onOpenProfile }: DMChatAreaProps) => {
   const [message, setMessage] = useState("");
+  const [typingUsers, setTypingUsers] = useState<string[]>([]);
   const bottomRef = useRef<HTMLDivElement>(null);
   const contact = contactNames[conversationId];
   const messages = dmMessages[conversationId] || [];
@@ -54,6 +56,18 @@ const DMChatArea = ({ conversationId, onOpenProfile }: DMChatAreaProps) => {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [conversationId]);
+
+  // Simulate typing from DM contact
+  useEffect(() => {
+    if (!contact) return;
+    const interval = setInterval(() => {
+      if (Math.random() > 0.6) {
+        setTypingUsers([contact.name]);
+        setTimeout(() => setTypingUsers([]), 2000 + Math.random() * 2000);
+      }
+    }, 7000);
+    return () => clearInterval(interval);
+  }, [contact]);
 
   if (!contact) return null;
 
@@ -105,6 +119,9 @@ const DMChatArea = ({ conversationId, onOpenProfile }: DMChatAreaProps) => {
 
       {/* Input */}
       <div className="px-4 pb-4">
+        <AnimatePresence>
+          <TypingIndicator users={typingUsers} />
+        </AnimatePresence>
         <div className="flex items-center gap-2 bg-muted rounded-xl px-4 py-1">
           <button className="text-muted-foreground hover:text-foreground transition-colors">
             <PlusCircle size={20} />
