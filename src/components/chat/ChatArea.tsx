@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Hash, Bell, Pin, Users, Search, SmilePlus, PlusCircle, Gift, ImagePlus, Send } from "lucide-react";
 import MessageBubble from "./MessageBubble";
+import TypingIndicator from "./TypingIndicator";
 
 const mockMessages = [
   {
@@ -76,10 +77,26 @@ interface ChatAreaProps {
 
 const ChatArea = ({ channel, onToggleMembers, showMembers, onOpenProfile }: ChatAreaProps) => {
   const [message, setMessage] = useState("");
+  const [typingUsers, setTypingUsers] = useState<string[]>([]);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, []);
+
+  // Simulate random typing indicators
+  useEffect(() => {
+    const names = ["Maya Patel", "Jordan Lee", "Sam Wright", "Riley Quinn"];
+    const interval = setInterval(() => {
+      const shouldType = Math.random() > 0.5;
+      if (shouldType) {
+        const count = Math.random() > 0.7 ? 2 : 1;
+        const shuffled = [...names].sort(() => Math.random() - 0.5);
+        setTypingUsers(shuffled.slice(0, count));
+        setTimeout(() => setTypingUsers([]), 3000 + Math.random() * 2000);
+      }
+    }, 6000);
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -131,8 +148,11 @@ const ChatArea = ({ channel, onToggleMembers, showMembers, onOpenProfile }: Chat
         <div ref={bottomRef} />
       </div>
 
-      {/* Input */}
+      {/* Typing Indicator + Input */}
       <div className="px-4 pb-4">
+        <AnimatePresence>
+          <TypingIndicator users={typingUsers} />
+        </AnimatePresence>
         <div className="flex items-center gap-2 bg-muted rounded-xl px-4 py-1">
           <button className="text-muted-foreground hover:text-foreground transition-colors">
             <PlusCircle size={20} />
