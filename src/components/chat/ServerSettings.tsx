@@ -96,7 +96,7 @@ const ServerSettings = ({ onClose }: ServerSettingsProps) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex bg-background/80 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex bg-background"
     >
       <div className="flex w-full">
         {/* Left nav */}
@@ -154,7 +154,7 @@ const ServerSettings = ({ onClose }: ServerSettingsProps) => {
                 {/* Server identity */}
                 <div className="flex items-start gap-6 mb-8">
                   <div className="relative group">
-                    <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center text-3xl font-bold text-primary-foreground">
+                    <div className="w-24 h-24 rounded-2xl bg-primary flex items-center justify-center text-3xl font-bold text-primary-foreground">
                       V
                     </div>
                     <div className="absolute inset-0 rounded-2xl bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
@@ -189,7 +189,7 @@ const ServerSettings = ({ onClose }: ServerSettingsProps) => {
                     { label: "Channels", value: "10", icon: Hash },
                     { label: "Roles", value: "4", icon: Shield },
                   ].map((stat) => (
-                    <div key={stat.label} className="glass rounded-xl p-4 text-center">
+                    <div key={stat.label} className="bg-secondary rounded-xl p-4 text-center">
                       <stat.icon size={20} className="mx-auto text-primary mb-2" />
                       <p className="text-2xl font-bold text-foreground">{stat.value}</p>
                       <p className="text-xs text-muted-foreground">{stat.label}</p>

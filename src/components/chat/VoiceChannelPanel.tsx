@@ -35,7 +35,7 @@ const VoiceChannelPanel = ({ channelName, onDisconnect }: VoiceChannelPanelProps
       animate={{ height: "auto", opacity: 1 }}
       exit={{ height: 0, opacity: 0 }}
       transition={{ duration: 0.2 }}
-      className="border-t border-border bg-card overflow-hidden"
+      className="border-t border-border bg-secondary overflow-hidden"
     >
       {/* Connection info */}
       <div className="px-3 pt-3 pb-2">
@@ -87,7 +87,7 @@ const VoiceChannelPanel = ({ channelName, onDisconnect }: VoiceChannelPanelProps
         {/* You */}
         <div className="flex items-center gap-2 px-2 py-1 rounded-md bg-muted/20">
           <div className="relative">
-            <div className="w-6 h-6 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-[10px] font-bold text-primary-foreground ring-2 ring-transparent">
+            <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center text-[10px] font-bold text-primary-foreground ring-2 ring-transparent">
               Y
             </div>
           </div>

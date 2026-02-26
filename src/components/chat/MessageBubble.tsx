@@ -68,7 +68,7 @@ const MessageBubble = ({ message, isGrouped, onAvatarClick }: MessageBubbleProps
             {message.reactions.map((r, i) => (
               <button
                 key={i}
-                className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-secondary border border-border hover:border-primary/50 transition-colors text-xs"
+                className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-secondary border border-border hover:border-primary/30 transition-colors text-xs"
               >
                 <span>{r.emoji}</span>
                 <span className="text-muted-foreground">{r.count}</span>

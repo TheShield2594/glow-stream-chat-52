@@ -122,7 +122,7 @@ const DMChatArea = ({ conversationId, onOpenProfile }: DMChatAreaProps) => {
         <AnimatePresence>
           <TypingIndicator users={typingUsers} />
         </AnimatePresence>
-        <div className="flex items-center gap-2 bg-muted rounded-xl px-4 py-1">
+        <div className="flex items-center gap-2 bg-secondary border border-border rounded-xl px-4 py-1">
           <button className="text-muted-foreground hover:text-foreground transition-colors">
             <PlusCircle size={20} />
           </button>
