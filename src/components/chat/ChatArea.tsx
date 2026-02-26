@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Hash, Bell, Pin, Users, Search, SmilePlus, PlusCircle, Gift, ImagePlus, Send } from "lucide-react";
 import MessageBubble from "./MessageBubble";
 import TypingIndicator from "./TypingIndicator";
+import ThreadWikiPage from "./ThreadWikiPage";
 
 const mockMessages = [
   {
@@ -78,7 +79,9 @@ interface ChatAreaProps {
 const ChatArea = ({ channel, onToggleMembers, showMembers, onOpenProfile }: ChatAreaProps) => {
   const [message, setMessage] = useState("");
   const [typingUsers, setTypingUsers] = useState<string[]>([]);
+  const [activeThread, setActiveThread] = useState<{id: string; author: string; avatar: string; color: string; content: string; time: string; reactions?: {emoji: string; count: number}[]} | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const threadPages = useState(new Set(["1", "4"]))[0]; // messages that have wiki pages
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -98,6 +101,18 @@ const ChatArea = ({ channel, onToggleMembers, showMembers, onOpenProfile }: Chat
     }, 6000);
     return () => clearInterval(interval);
   }, []);
+
+  if (activeThread) {
+    return (
+      <AnimatePresence mode="wait">
+        <ThreadWikiPage
+          key={activeThread.id}
+          message={activeThread}
+          onClose={() => setActiveThread(null)}
+        />
+      </AnimatePresence>
+    );
+  }
 
   return (
     <div className="flex flex-col flex-1 min-w-0">
@@ -143,6 +158,11 @@ const ChatArea = ({ channel, onToggleMembers, showMembers, onOpenProfile }: Chat
             message={msg}
             isGrouped={i > 0 && mockMessages[i - 1].author === msg.author}
             onAvatarClick={() => onOpenProfile(msg.author)}
+            onOpenThread={(m) => {
+              threadPages.add(m.id);
+              setActiveThread(m);
+            }}
+            hasThread={threadPages.has(msg.id)}
           />
         ))}
         <div ref={bottomRef} />

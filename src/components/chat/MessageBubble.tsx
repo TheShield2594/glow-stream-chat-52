@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { FileText } from "lucide-react";
 import { useRelativeTime } from "@/hooks/useRelativeTime";
 
 interface Reaction {
@@ -20,9 +21,11 @@ interface MessageBubbleProps {
   message: Message;
   isGrouped: boolean;
   onAvatarClick: () => void;
+  onOpenThread?: (message: Message) => void;
+  hasThread?: boolean;
 }
 
-const MessageBubble = ({ message, isGrouped, onAvatarClick }: MessageBubbleProps) => {
+const MessageBubble = ({ message, isGrouped, onAvatarClick, onOpenThread, hasThread }: MessageBubbleProps) => {
   const relativeTime = useRelativeTime(message.time);
   return (
     <motion.div
@@ -75,6 +78,28 @@ const MessageBubble = ({ message, isGrouped, onAvatarClick }: MessageBubbleProps
               </button>
             ))}
           </div>
+        )}
+
+        {/* Thread indicator / open thread button */}
+        {hasThread && (
+          <button
+            onClick={() => onOpenThread?.(message)}
+            className="flex items-center gap-1.5 mt-1.5 text-xs text-primary hover:text-primary/80 transition-colors"
+          >
+            <FileText size={13} />
+            <span className="font-medium">View page</span>
+          </button>
+        )}
+
+        {/* Hover action to create/open thread */}
+        {!hasThread && (
+          <button
+            onClick={() => onOpenThread?.(message)}
+            className="flex items-center gap-1 mt-0.5 text-[11px] text-muted-foreground/0 group-hover:text-muted-foreground hover:!text-primary transition-colors"
+          >
+            <FileText size={12} />
+            <span>Open as page</span>
+          </button>
         )}
       </div>
     </motion.div>
