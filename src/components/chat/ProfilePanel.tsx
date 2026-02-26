@@ -71,13 +71,13 @@ const ProfilePanel = ({ name, onClose }: ProfilePanelProps) => {
           animate={{ x: 0, opacity: 1 }}
           exit={{ x: 300, opacity: 0 }}
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          className="w-[340px] shrink-0 border-l border-border bg-card flex flex-col overflow-hidden"
+          className="w-[340px] shrink-0 border-l border-border bg-background flex flex-col overflow-hidden"
         >
           {/* Banner */}
           <div className={`h-28 bg-gradient-to-br ${profile.banner} relative`}>
             <button
               onClick={onClose}
-              className="absolute top-2 right-2 p-1.5 rounded-full glass hover:bg-muted transition-colors"
+              className="absolute top-2 right-2 p-1.5 rounded-full bg-background/80 hover:bg-background transition-colors shadow-sm"
             >
               <X size={14} className="text-foreground" />
             </button>
@@ -118,14 +118,14 @@ const ProfilePanel = ({ name, onClose }: ProfilePanelProps) => {
             {/* Sections */}
             <div className="space-y-3">
               {/* Bio */}
-              <div className="glass rounded-xl p-3">
+              <div className="bg-secondary rounded-xl p-3">
                 <h4 className="text-[11px] font-semibold tracking-wider text-muted-foreground mb-1.5">ABOUT ME</h4>
                 <p className="text-sm text-foreground leading-relaxed">{profile.bio}</p>
               </div>
 
               {/* Activity */}
               {profile.activity && (
-                <div className="glass rounded-xl p-3">
+                <div className="bg-secondary rounded-xl p-3">
                   <h4 className="text-[11px] font-semibold tracking-wider text-muted-foreground mb-1.5">ACTIVITY</h4>
                   <div className="flex items-center gap-2">
                     <Gamepad2 size={14} className="text-primary" />
@@ -136,7 +136,7 @@ const ProfilePanel = ({ name, onClose }: ProfilePanelProps) => {
 
               {/* Badges */}
               {profile.badges.length > 0 && (
-                <div className="glass rounded-xl p-3">
+                <div className="bg-secondary rounded-xl p-3">
                   <h4 className="text-[11px] font-semibold tracking-wider text-muted-foreground mb-2">BADGES</h4>
                   <div className="flex flex-wrap gap-1.5">
                     {profile.badges.map((badge) => (
@@ -152,7 +152,7 @@ const ProfilePanel = ({ name, onClose }: ProfilePanelProps) => {
               )}
 
               {/* Member since */}
-              <div className="glass rounded-xl p-3">
+              <div className="bg-secondary rounded-xl p-3">
                 <h4 className="text-[11px] font-semibold tracking-wider text-muted-foreground mb-1.5">MEMBER SINCE</h4>
                 <div className="flex items-center gap-2">
                   <Calendar size={14} className="text-muted-foreground" />
@@ -161,7 +161,7 @@ const ProfilePanel = ({ name, onClose }: ProfilePanelProps) => {
               </div>
 
               {/* Roles */}
-              <div className="glass rounded-xl p-3">
+              <div className="bg-secondary rounded-xl p-3">
                 <h4 className="text-[11px] font-semibold tracking-wider text-muted-foreground mb-2">ROLES</h4>
                 <div className="flex flex-wrap gap-1.5">
                   <span className="text-xs flex items-center gap-1 bg-primary/10 text-primary border border-primary/20 px-2.5 py-1 rounded-full">

@@ -128,8 +128,8 @@ const ChatArea = ({ channel, onToggleMembers, showMembers, onOpenProfile }: Chat
       <div className="flex-1 overflow-y-auto scrollbar-thin px-4 py-4">
         {/* Welcome banner */}
         <div className="mb-6 pb-6 border-b border-border">
-          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-2xl mb-3">
-            <Hash size={28} className="text-primary-foreground" />
+          <div className="w-14 h-14 rounded-2xl bg-secondary flex items-center justify-center text-2xl mb-3">
+            <Hash size={24} className="text-muted-foreground" />
           </div>
           <h2 className="text-2xl font-bold text-foreground mb-1">Welcome to #{channel}</h2>
           <p className="text-muted-foreground text-sm">
@@ -153,7 +153,7 @@ const ChatArea = ({ channel, onToggleMembers, showMembers, onOpenProfile }: Chat
         <AnimatePresence>
           <TypingIndicator users={typingUsers} />
         </AnimatePresence>
-        <div className="flex items-center gap-2 bg-muted rounded-xl px-4 py-1">
+        <div className="flex items-center gap-2 bg-secondary border border-border rounded-xl px-4 py-1">
           <button className="text-muted-foreground hover:text-foreground transition-colors">
             <PlusCircle size={20} />
           </button>

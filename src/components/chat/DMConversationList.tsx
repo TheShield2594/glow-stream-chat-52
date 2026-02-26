@@ -33,7 +33,7 @@ const DMConversationList = ({ activeConversation, onConversationChange }: DMConv
   );
 
   return (
-    <div className="flex flex-col w-60 bg-card shrink-0">
+    <div className="flex flex-col w-60 bg-card border-r border-border shrink-0">
       {/* Header */}
       <div className="h-12 px-4 flex items-center border-b border-border">
         <h2 className="font-semibold text-foreground">Direct Messages</h2>
@@ -125,7 +125,7 @@ const DMConversationList = ({ activeConversation, onConversationChange }: DMConv
       {/* User bar */}
       <div className="h-[52px] px-2 flex items-center gap-2 bg-sidebar border-t border-border">
         <div className="relative">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-xs font-bold text-primary-foreground">
+          <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-xs font-bold text-primary-foreground">
             Y
           </div>
           <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-online rounded-full border-2 border-sidebar" />
