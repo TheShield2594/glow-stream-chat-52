@@ -6,6 +6,7 @@ import ChatArea from "@/components/chat/ChatArea";
 import MemberList from "@/components/chat/MemberList";
 import ProfilePanel from "@/components/chat/ProfilePanel";
 import ServerSettings from "@/components/chat/ServerSettings";
+import ThemePanel from "@/components/chat/ThemePanel";
 import DMConversationList from "@/components/chat/DMConversationList";
 import DMChatArea from "@/components/chat/DMChatArea";
 import { NotificationProvider, useNotifications } from "@/hooks/useNotifications";
@@ -18,6 +19,7 @@ const IndexContent = () => {
   const [profileName, setProfileName] = useState<string | null>(null);
   const [showSettings, setShowSettings] = useState(false);
   const [voiceChannel, setVoiceChannel] = useState<string | null>(null);
+  const [showTheme, setShowTheme] = useState(false);
 
   const { markRead } = useNotifications();
 
@@ -53,6 +55,7 @@ const IndexContent = () => {
             activeChannel={activeChannel}
             onChannelChange={handleChannelChange}
             onOpenSettings={() => setShowSettings(true)}
+            onOpenTheme={() => setShowTheme(true)}
             voiceChannel={voiceChannel}
             onJoinVoice={setVoiceChannel}
             onLeaveVoice={() => setVoiceChannel(null)}
@@ -73,6 +76,9 @@ const IndexContent = () => {
       <ProfilePanel name={profileName} onClose={() => setProfileName(null)} />
       <AnimatePresence>
         {showSettings && <ServerSettings onClose={() => setShowSettings(false)} />}
+      </AnimatePresence>
+      <AnimatePresence>
+        {showTheme && <ThemePanel onClose={() => setShowTheme(false)} />}
       </AnimatePresence>
     </div>
   );

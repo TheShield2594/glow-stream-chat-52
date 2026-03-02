@@ -41,12 +41,13 @@ interface ChannelListProps {
   activeChannel: string;
   onChannelChange: (id: string) => void;
   onOpenSettings?: () => void;
+  onOpenTheme?: () => void;
   voiceChannel: string | null;
   onJoinVoice: (id: string) => void;
   onLeaveVoice: () => void;
 }
 
-const ChannelList = ({ activeChannel, onChannelChange, onOpenSettings, voiceChannel, onJoinVoice, onLeaveVoice }: ChannelListProps) => {
+const ChannelList = ({ activeChannel, onChannelChange, onOpenSettings, onOpenTheme, voiceChannel, onJoinVoice, onLeaveVoice }: ChannelListProps) => {
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const { unreads } = useNotifications();
 
@@ -178,7 +179,11 @@ const ChannelList = ({ activeChannel, onChannelChange, onOpenSettings, voiceChan
           <p className="text-sm font-medium text-foreground truncate">You</p>
           <p className="text-[10px] text-muted-foreground">Online</p>
         </div>
-        <button className="p-1.5 text-muted-foreground hover:text-foreground transition-colors">
+        <button
+          onClick={onOpenTheme}
+          className="p-1.5 text-muted-foreground hover:text-foreground transition-colors"
+          title="Appearance"
+        >
           <Settings size={16} />
         </button>
       </div>
